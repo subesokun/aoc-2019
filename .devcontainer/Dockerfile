@@ -2,12 +2,16 @@
 
 FROM mcr.microsoft.com/vscode/devcontainers/rust:0-1
 
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION 14
+
 # [Optional] Uncomment this section to install additional packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends curl \
-    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash \
-    && echo 'export NVM_DIR="$HOME/.nvm"' >> "$HOME/.bashrc" \
-    && echo '\n' >> "$HOME/.bashrc" \
-    && echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm' >> "$HOME/.bashrc"
+    && apt-get -y install --no-install-recommends curl
+
+USER vscode
+
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash \
+    && /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
 
 #    && cargo install wasm-pack cargo-generate \
